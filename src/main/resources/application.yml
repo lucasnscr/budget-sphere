@@ -1,40 +1,193 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
 spring:
   application:
-    name: budgetsphere-agents
+    name: budgetsphere-complete
+  
+  profiles:
+    active: local
+  
+  datasource:
+    url: jdbc:h2:mem:budgetsphere;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   
   ai:
     ollama:
-      init:
-        pull-model-strategy: always
-        timeout: 60s
-        max-retries: 1
-        embedding:
-          additional-models: nomic-embed-text
       base-url: http://localhost:11434
       chat:
-        model: qwen3:8b
+        model: qwen2.5:7b
         options:
-          temperature: 0.7
+          temperature: 0.1
           top-p: 0.9
-          max-tokens: 2048
-        enabled: true
+          max-tokens: 2000
+      embedding:
+        model: nomic-embed-text
+        options:
+          temperature: 0.0
+    
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 768
 
-server:
-  port: 8080
+# BudgetSphere specific configuration
+budgetsphere:
+  agents:
+    react:
+      enabled: true
+      max-iterations: 5
+      timeout-seconds: 30
+    planning:
+      enabled: true
+      max-planning-depth: 3
+      timeout-seconds: 45
+    reflection:
+      enabled: true
+      analysis-depth: deep
+      timeout-seconds: 60
+    supervisor:
+      enabled: true
+      routing-strategy: intelligent
+      timeout-seconds: 15
+  
+  memory:
+    episodic:
+      enabled: true
+      max-episodes-per-user: 1000
+      retention-days: 365
+      similarity-threshold: 0.7
+    semantic:
+      enabled: true
+      max-knowledge-items: 5000
+      confidence-threshold: 0.8
+    procedural:
+      enabled: true
+      max-procedures: 500
+      optimization-enabled: true
+    short-term:
+      enabled: true
+      session-timeout-minutes: 30
+      max-context-size: 10
+    
+    optimization:
+      enabled: true
+      cleanup-interval-hours: 24
+      batch-size: 50
+      low-satisfaction-threshold: 0.3
 
-logging:
-  level:
-    com.budgetsphere: DEBUG
-    org.springframework.ai: INFO
-  pattern:
-    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-
+# Monitoring and observability
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus,memory-stats
   endpoint:
     health:
       show-details: always
+    metrics:
+      access: read_only
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+# API Documentation
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+  show-actuator: true
+
+# Logging configuration
+logging:
+  level:
+    com.budgetsphere: INFO
+    org.springframework.ai: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/budgetsphere.log
+
+---
+# Production profile
+spring:
+  config:
+    activate:
+      on-profile: production
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/budgetsphere
+    username: ${DB_USERNAME:budgetsphere}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  
+  ai:
+    vectorstore:
+      pgvector:
+        host: ${PGVECTOR_HOST:localhost}
+        port: ${PGVECTOR_PORT:5432}
+        database: ${PGVECTOR_DB:budgetsphere}
+        username: ${PGVECTOR_USERNAME:budgetsphere}
+        password: ${PGVECTOR_PASSWORD:password}
+
+logging:
+  level:
+    com.budgetsphere: INFO
+    org.springframework.ai: WARN
+    org.springframework.web: WARN
+
+---
+# Development profile
+spring:
+  config:
+    activate:
+      on-profile: development
+  
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.budgetsphere: DEBUG
+    org.springframework.ai: DEBUG
+    org.springframework.web: DEBUG
 

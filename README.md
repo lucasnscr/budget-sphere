@@ -1,307 +1,429 @@
-# 🤖 BudgetSphere - Agentes de IA Financeira
+# BudgetSphere - AI-Powered Financial Assistant with Memory
 
-**Versão Simplificada e Funcional**
+🤖 **Advanced AI Agent System for Personal Financial Management**
 
-Uma implementação prática e demonstrativa de **todos os patterns de agentes de IA** aplicados ao contexto financeiro pessoal, usando Spring AI 1.0.0-M6 com modelo qwen:8b.
+BudgetSphere is a sophisticated financial assistant powered by AI agents with integrated memory capabilities. The system uses Spring AI, Ollama, and PostgreSQL with PGVector to provide personalized, context-aware financial advice that improves over time through experience and learning.
 
-## 🎯 **Objetivo**
+## 🌟 Key Features
 
-Demonstrar de forma clara e funcional como implementar patterns de agentes de IA em uma aplicação real, focando na **simplicidade** e **funcionalidade** sem complexidades desnecessárias.
+### 🧠 **Memory-Enabled AI Agents**
+- **Episodic Memory**: Remembers past interactions and user experiences
+- **Semantic Knowledge**: Maintains financial concepts and rules
+- **Procedural Memory**: Optimizes workflows based on successful patterns
+- **Vector Similarity Search**: Finds relevant past experiences and knowledge
 
-## 🧠 **Patterns Implementados**
+### 🤖 **Intelligent Agent System**
+- **SupervisorAgent**: Intelligent routing to the most appropriate agent
+- **ReactAgent**: Quick responses and calculations
+- **PlanningAgent**: Complex financial planning and strategies
+- **ReflectionAgent**: Analysis and performance insights
 
-### 1. 🔄 **ReAct Pattern** - `ReactAgent`
-**Problema que resolve**: Análise inteligente com raciocínio explícito
-**Solução**: Ciclo Observe → Reason → Act
+### 🌐 **Multi-Language Support**
+- English and Portuguese language support
+- Automatic language detection and response matching
 
-```java
-// Exemplo de uso
-POST /api/v1/budgetsphere/analyze
-{
-  "input": "Gastei R$ 2000 em alimentação este mês"
-}
+### 📊 **Comprehensive Monitoring**
+- Real-time memory dashboard
+- Performance metrics and analytics
+- Health monitoring for all system components
+- Grafana dashboards for advanced monitoring
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   User Request  │───▶│ SupervisorAgent │───▶│ Specialized     │
+│                 │    │ (Routing)       │    │ Agents          │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │                       │
+                                ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ Memory System   │◀───│ Memory          │───▶│ Vector Store    │
+│ (PostgreSQL)    │    │ Orchestration   │    │ (PGVector)      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-**Como funciona**:
-1. **OBSERVE**: Analisa os dados financeiros objetivamente
-2. **REASON**: Raciocina sobre padrões e anomalias
-3. **ACT**: Decide ação específica baseada no raciocínio
+### Memory Architecture
+- **Episodic Memory**: Stores user interactions with context and outcomes
+- **Semantic Knowledge**: Financial concepts, rules, and definitions
+- **Procedural Memory**: Optimized workflows and decision patterns
+- **Vector Embeddings**: Enable semantic similarity search across all memory types
 
-### 2. 📋 **Planning Pattern** - `PlanningAgent`
-**Problema que resolve**: Criação de planos financeiros estruturados
-**Solução**: Analyze → Plan → Optimize
+## 🚀 Quick Start
 
-```java
-// Exemplo de uso
-POST /api/v1/budgetsphere/plan
-{
-  "goal": "Quero economizar R$ 1000 por mês"
-}
-```
+### Prerequisites
+- Docker and Docker Compose
+- Java 21
+- Maven 3.6+
+- 8GB+ RAM (for Ollama model)
 
-**Como funciona**:
-1. **ANALYZE**: Analisa situação financeira atual
-2. **PLAN**: Cria plano detalhado com metas e estratégias
-3. **OPTIMIZE**: Otimiza o plano baseado em melhores práticas
-
-### 3. 🪞 **Reflection Pattern** - `ReflectionAgent`
-**Problema que resolve**: Aprendizado contínuo e melhoria
-**Solução**: Review → Reflect → Learn
-
-```java
-// Exemplo de uso
-POST /api/v1/budgetsphere/reflect
-{
-  "period": "últimos 3 meses"
-}
-```
-
-**Como funciona**:
-1. **REVIEW**: Revisa dados e resultados históricos
-2. **REFLECT**: Reflete sobre o que funcionou e o que não funcionou
-3. **LEARN**: Extrai aprendizados e define melhorias
-
-### 4. 👥 **Multi-Agent Pattern** - `SupervisorAgent`
-**Problema que resolve**: Orquestração inteligente de múltiplos agentes
-**Solução**: Route → Coordinate → Synthesize
-
-```java
-// Exemplo de uso
-POST /api/v1/budgetsphere/chat
-{
-  "message": "Preciso de ajuda com meu orçamento mensal"
-}
-```
-
-**Como funciona**:
-1. **ROUTE**: Decide quais agentes usar baseado na solicitação
-2. **COORDINATE**: Executa agentes apropriados em sequência ou paralelo
-3. **SYNTHESIZE**: Combina resultados em resposta unificada
-
-### 5. 🛠️ **Tool Use Pattern** - `ToolRegistry`
-**Problema que resolve**: Execução de ferramentas especializadas
-**Solução**: Registro dinâmico e execução segura de ferramentas
-
-```java
-// Exemplo de uso
-POST /api/v1/budgetsphere/tools/BudgetCalculator
-{
-  "monthlyIncome": "5000"
-}
-```
-
-**Ferramentas disponíveis**:
-- **BudgetCalculator**: Aplica regra 50/30/20 para distribuição de orçamento
-- **ExpenseAnalyzer**: Analisa padrões de despesas e detecta anomalias
-
-## 🚀 **Como Executar**
-
-### Pré-requisitos
-- **Java 21**
-- **Maven 3.6+**
-- **Ollama** com modelo `qwen:8b` (opcional para teste completo)
-
-### Passos
-
-1. **Clone/Download do projeto**
+### 1. Clone and Setup
 ```bash
-# Projeto está em: /home/ubuntu/BudgetSphere-Simple-v2
+git clone <repository-url>
+cd budgetsphere-complete
 ```
 
-2. **Compile e execute**
+### 2. Start the System
 ```bash
-mvn compile
-mvn install -DskipTests
-java -jar target/budget-sphere-agents-1.0.0.jar
+./scripts/start.sh
 ```
 
-3. **Teste a aplicação**
+This script will:
+- Start PostgreSQL with PGVector extension
+- Launch Ollama and pull the Qwen2.5:7b model
+- Start Redis, Prometheus, and Grafana
+- Build and run the Spring Boot application
+
+### 3. Verify Installation
 ```bash
-# Verificar status
-curl http://localhost:8080/api/v1/budgetsphere/health
-
-# Ver demonstração
-curl http://localhost:8080/api/v1/budgetsphere/demo
+./scripts/test.sh
 ```
 
-## 📊 **Endpoints Principais**
+### 4. Access the System
+- **Main Application**: http://localhost:8080
+- **Memory Dashboard**: http://localhost:8080/api/memory/dashboard
+- **API Documentation**: http://localhost:8080/swagger-ui.html
+- **Grafana Monitoring**: http://localhost:3000 (admin/budgetsphere123)
 
-### Informações Gerais
-- `GET /api/v1/budgetsphere/` - Informações da aplicação
-- `GET /api/v1/budgetsphere/health` - Status de saúde
-- `GET /api/v1/budgetsphere/demo` - Exemplos de uso
+## 📡 API Usage
 
-### Agentes (Patterns)
-- `POST /api/v1/budgetsphere/chat` - **Multi-Agent Pattern**
-- `POST /api/v1/budgetsphere/analyze` - **ReAct Pattern**
-- `POST /api/v1/budgetsphere/plan` - **Planning Pattern**
-- `POST /api/v1/budgetsphere/reflect` - **Reflection Pattern**
-
-### Ferramentas (Tool Use Pattern)
-- `GET /api/v1/budgetsphere/tools` - Lista ferramentas
-- `POST /api/v1/budgetsphere/tools/{toolName}` - Executa ferramenta
-
-### Metadados
-- `GET /api/v1/budgetsphere/agents` - Lista agentes
-- `GET /api/v1/budgetsphere/agents/{agentName}` - Info do agente
-
-## 🏗️ **Arquitetura Simplificada**
-
-```
-BudgetSphere-Simple-v2/
-├── src/main/java/com/budgetsphere/
-│   ├── agent/                    # 🤖 Agentes com patterns
-│   │   ├── BaseAgent.java        # Classe base comum
-│   │   ├── ReactAgent.java       # ReAct Pattern
-│   │   ├── PlanningAgent.java    # Planning Pattern
-│   │   ├── ReflectionAgent.java  # Reflection Pattern
-│   │   └── SupervisorAgent.java  # Multi-Agent Pattern
-│   ├── tool/                     # 🛠️ Ferramentas (Tool Use)
-│   │   ├── FinancialTool.java    # Interface base
-│   │   ├── BudgetCalculatorTool.java
-│   │   ├── ExpenseAnalyzerTool.java
-│   │   └── ToolRegistry.java     # Registro de ferramentas
-│   ├── model/                    # 📊 Modelos de dados
-│   ├── service/                  # ⚙️ Serviços
-│   ├── controller/               # 🌐 REST Controllers
-│   └── BudgetSphereApplication.java
-├── src/main/resources/
-│   └── application.yml           # Configuração simples
-└── pom.xml                       # Dependências mínimas
-```
-
-## 🎯 **Características Principais**
-
-### ✅ **Simplicidade**
-- Código limpo e bem documentado
-- Dependências mínimas necessárias
-- Configuração simplificada
-
-### ✅ **Funcionalidade**
-- Todos os patterns funcionando
-- Endpoints REST testados
-- Logs detalhados para debug
-
-### ✅ **Demonstrativo**
-- Cada pattern claramente implementado
-- Exemplos práticos de uso
-- Documentação explicativa
-
-### ✅ **Extensibilidade**
-- Fácil adição de novos agentes
-- Sistema de ferramentas plugável
-- Arquitetura modular
-
-## 🧪 **Exemplos de Teste**
-
-### 1. Tool Use Pattern - Calculadora de Orçamento
+### Basic Chat Request
 ```bash
-curl -X POST http://localhost:8080/api/v1/budgetsphere/tools/BudgetCalculator \
+curl -X POST http://localhost:8080/api/agents/chat \
   -H "Content-Type: application/json" \
-  -d '{"monthlyIncome": "5000"}'
+  -d '{
+    "userId": "user123",
+    "sessionId": "session001",
+    "message": "How much should I save for retirement?",
+    "useMemory": true,
+    "storeExperience": true,
+    "monthlyIncome": 5000.00,
+    "monthlyExpenses": 3500.00,
+    "age": 28,
+    "riskTolerance": "MODERATE"
+  }'
 ```
 
-**Resposta**:
+### Response Format
 ```json
 {
+  "sessionId": "session001",
+  "userId": "user123",
+  "agentUsed": "PlanningAgent",
+  "message": "Based on your age and income, I recommend...",
   "success": true,
-  "monthlyIncome": 5000,
-  "needs": 2500.00,
-  "wants": 1500.00,
-  "savings": 1000.00,
-  "rule": "50/30/20",
-  "categories": {
-    "moradia": 1000.00,
-    "alimentacao": 750.00,
-    "transporte": 500.00,
-    "lazer": 750.00,
-    "emergencia": 600.00,
-    "investimentos": 400.00
-  }
+  "reasoning": "Selected PlanningAgent for retirement planning expertise",
+  "recommendations": [
+    "Start with 15% of income for retirement savings",
+    "Maximize employer 401k match first"
+  ],
+  "nextSteps": [
+    "Open a Roth IRA account",
+    "Review investment allocation"
+  ],
+  "financialAnalysis": {
+    "savingsRate": 0.30,
+    "budgetUtilization": 0.70,
+    "financialHealthScore": "Good"
+  },
+  "memoryInfo": {
+    "confidenceScore": 0.85,
+    "summary": "High confidence based on similar past interactions"
+  },
+  "processingTimeMs": 1250,
+  "timestamp": "2024-01-15T10:30:00"
 }
 ```
 
-### 2. Multi-Agent Pattern - Chat Inteligente
+## 🎯 Agent Specializations
+
+### SupervisorAgent
+**Purpose**: Intelligent request routing
+- Analyzes request content and context
+- Routes to the most appropriate specialized agent
+- Considers user history and agent performance
+
+### ReactAgent
+**Purpose**: Quick responses and calculations
+- Immediate financial questions
+- Mathematical calculations
+- General financial advice
+- Emergency fund calculations
+
+### PlanningAgent
+**Purpose**: Strategic financial planning
+- Retirement planning
+- Investment strategies
+- Long-term goal planning
+- Complex financial scenarios
+
+### ReflectionAgent
+**Purpose**: Analysis and insights
+- Performance analysis
+- Progress tracking
+- Financial health assessment
+- Trend identification
+
+## 🧠 Memory System
+
+### Episodic Memory
+Stores individual user interactions with full context:
+```json
+{
+  "userId": "user123",
+  "sessionId": "session001",
+  "agentName": "PlanningAgent",
+  "userMessage": "Help me plan for retirement",
+  "agentResponse": "Based on your profile...",
+  "contextData": {
+    "monthlyIncome": 5000,
+    "age": 28,
+    "riskTolerance": "MODERATE"
+  },
+  "satisfactionScore": 0.85,
+  "timestamp": "2024-01-15T10:30:00"
+}
+```
+
+### Semantic Knowledge
+Financial concepts and rules:
+```json
+{
+  "concept": "Emergency Fund",
+  "category": "savings",
+  "definition": "Money set aside for unexpected expenses",
+  "rules": [
+    "Should cover 3-6 months of expenses",
+    "Keep in easily accessible account"
+  ],
+  "confidenceScore": 0.95,
+  "usageCount": 150
+}
+```
+
+### Procedural Memory
+Optimized workflows:
+```json
+{
+  "procedureName": "Emergency Fund Assessment",
+  "agentPattern": "ReactAgent",
+  "steps": [
+    "Calculate monthly essential expenses",
+    "Multiply by 3-6 months",
+    "Compare with current savings",
+    "Recommend specific target"
+  ],
+  "successRate": 0.92,
+  "efficiencyScore": 0.85
+}
+```
+
+## 📊 Monitoring and Analytics
+
+### Memory Dashboard
+Access the comprehensive memory dashboard at `/api/memory/dashboard`:
+- System health overview
+- Memory distribution charts
+- Recent activity logs
+- User-specific analytics
+- Performance trends
+
+### Metrics Available
+- **Success Rate**: Percentage of successful interactions
+- **Satisfaction Score**: Average user satisfaction (0.0-1.0)
+- **Memory Health**: Overall system memory health
+- **Agent Performance**: Individual agent effectiveness
+- **Response Time**: Average processing time
+
+### Grafana Dashboards
+Pre-configured dashboards for:
+- Application performance metrics
+- Memory system health
+- Agent usage patterns
+- User engagement analytics
+
+## 🔧 Configuration
+
+### Environment Variables
 ```bash
-curl -X POST http://localhost:8080/api/v1/budgetsphere/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Preciso de ajuda com meu orçamento mensal"}'
+# Database Configuration
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/budgetsphere
+SPRING_DATASOURCE_USERNAME=budgetsphere
+SPRING_DATASOURCE_PASSWORD=budgetsphere123
+
+# Ollama Configuration
+SPRING_AI_OLLAMA_BASE_URL=http://localhost:11434
+SPRING_AI_OLLAMA_CHAT_MODEL=qwen2.5:7b
+
+# Redis Configuration
+SPRING_REDIS_HOST=localhost
+SPRING_REDIS_PORT=6379
+SPRING_REDIS_PASSWORD=budgetsphere123
+
+# Memory Configuration
+BUDGETSPHERE_MEMORY_VECTOR_DIMENSION=1536
+BUDGETSPHERE_MEMORY_SIMILARITY_THRESHOLD=0.7
+BUDGETSPHERE_MEMORY_MAX_EPISODES_PER_USER=1000
 ```
 
-### 3. ReAct Pattern - Análise com Raciocínio
+### Application Properties
+Key configuration options in `application.yml`:
+- Memory system parameters
+- Agent routing preferences
+- Performance thresholds
+- Monitoring settings
+
+## 🧪 Testing
+
+### Automated Test Suite
 ```bash
-curl -X POST http://localhost:8080/api/v1/budgetsphere/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"input": "Gastei R$ 2000 em alimentação este mês"}'
+./scripts/test.sh
 ```
 
-## 🔧 **Configuração**
+Tests include:
+- Health checks for all services
+- Agent functionality verification
+- Memory system operations
+- Multi-language support
+- Complex financial scenarios
+- Performance benchmarks
 
-### application.yml
-```yaml
-spring:
-  application:
-    name: budgetsphere-agents
-  ai:
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        model: qwen:8b
-        options:
-          temperature: 0.7
-          max-tokens: 1000
+### Manual Testing
+Use the provided example payloads in the `/examples` directory:
+- Basic financial questions
+- Complex planning scenarios
+- Multi-session conversations
+- Portuguese language examples
 
-server:
-  port: 8080
+## 🛠️ Development
 
-logging:
-  level:
-    com.budgetsphere: DEBUG
+### Project Structure
+```
+budgetsphere-complete/
+├── src/main/java/com/budgetsphere/
+│   ├── agent/              # AI Agent implementations
+│   ├── controller/         # REST API controllers
+│   ├── dto/               # Data transfer objects
+│   ├── memory/            # Memory system services
+│   ├── model/             # JPA entities
+│   └── repository/        # Data repositories
+├── src/main/resources/
+│   ├── templates/         # Thymeleaf templates
+│   ├── static/           # Static web resources
+│   └── application.yml   # Configuration
+├── scripts/              # Utility scripts
+├── config/              # External configuration
+└── docker-compose.yml  # Infrastructure setup
 ```
 
-## 📈 **Logs e Monitoramento**
+### Adding New Agents
+1. Extend `BaseAgent` class
+2. Implement required abstract methods
+3. Add to `SupervisorAgent` routing logic
+4. Update configuration and tests
 
-A aplicação fornece logs detalhados para acompanhar a execução dos patterns:
+### Extending Memory System
+1. Create new memory entity
+2. Add repository interface
+3. Update `MemoryOrchestrationService`
+4. Add API endpoints if needed
 
+## 🔒 Security Considerations
+
+### Data Protection
+- User data is isolated by userId
+- Sensitive information is not logged
+- Memory data includes privacy controls
+- Vector embeddings don't contain raw text
+
+### API Security
+- Input validation on all endpoints
+- Rate limiting for chat endpoints
+- Session management for user tracking
+- Error handling without information leakage
+
+## 📈 Performance Optimization
+
+### Memory Management
+- Automatic cleanup of old episodes
+- Vector index optimization
+- Query performance monitoring
+- Memory usage alerts
+
+### Caching Strategy
+- Redis for session data
+- In-memory caching for frequent queries
+- Vector similarity result caching
+- Agent response caching
+
+## 🚀 Deployment
+
+### Production Considerations
+- Use external PostgreSQL cluster
+- Configure Ollama with GPU support
+- Set up proper monitoring and alerting
+- Implement backup strategies
+- Configure load balancing
+
+### Scaling Options
+- Horizontal scaling of application instances
+- Database read replicas
+- Distributed vector storage
+- Microservice decomposition
+
+## 🤝 Contributing
+
+### Development Setup
+1. Fork the repository
+2. Set up development environment
+3. Run tests to ensure everything works
+4. Make your changes
+5. Add tests for new functionality
+6. Submit a pull request
+
+### Code Standards
+- Follow Spring Boot best practices
+- Use Lombok for boilerplate reduction
+- Write comprehensive tests
+- Document new features
+- Follow semantic versioning
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+### Common Issues
+- **Ollama model not loading**: Ensure sufficient RAM (8GB+)
+- **Database connection errors**: Check PostgreSQL container status
+- **Slow responses**: Monitor system resources and Ollama performance
+- **Memory dashboard not loading**: Verify all services are running
+
+### Getting Help
+- Check the troubleshooting section
+- Review application logs
+- Run the test suite to identify issues
+- Check Docker container status
+
+### Logs and Debugging
+```bash
+# Application logs
+tail -f logs/application.log
+
+# Docker service logs
+docker-compose logs -f
+
+# Database logs
+docker-compose logs postgres
+
+# Ollama logs
+docker-compose logs ollama
 ```
-🤖 ReactAgent chamando IA com prompt: ...
-🔄 ReactAgent iniciando ciclo ReAct para: ...
-👁️ OBSERVE: ...
-🧠 REASON: ...
-⚡ ACT: ...
-```
-
-## 🎓 **Aprendizados e Insights**
-
-### **Por que esta implementação é eficaz?**
-
-1. **Clareza**: Cada pattern é implementado de forma isolada e clara
-2. **Funcionalidade**: Todos os endpoints funcionam e podem ser testados
-3. **Simplicidade**: Sem complexidades desnecessárias
-4. **Demonstrativo**: Fácil de entender e modificar
-5. **Extensível**: Base sólida para expansões futuras
-
-### **Diferenças da versão anterior**
-
-- ❌ Removida complexidade de resiliência (Resilience4j)
-- ❌ Removida infraestrutura pesada (PostgreSQL, Redis)
-- ❌ Removidas dependências desnecessárias
-- ✅ Foco nos patterns de agentes
-- ✅ Código mais limpo e direto
-- ✅ Execução local garantida
-- ✅ Documentação clara dos patterns
-
-## 🚀 **Próximos Passos**
-
-Para expandir esta implementação:
-
-1. **Adicionar novos agentes** seguindo o padrão `BaseAgent`
-2. **Criar novas ferramentas** implementando `FinancialTool`
-3. **Implementar memória persistente** (se necessário)
-4. **Adicionar validações** e tratamento de erros
-5. **Criar interface web** para demonstração visual
 
 ---
 
-**Esta implementação demonstra que é possível criar agentes de IA funcionais e práticos sem complexidade excessiva, focando no que realmente importa: os patterns e sua aplicação efetiva.**
+**Built with ❤️ using Spring AI, Ollama, and PostgreSQL**
+
+*BudgetSphere - Making financial planning intelligent, personal, and continuously improving.*
 
